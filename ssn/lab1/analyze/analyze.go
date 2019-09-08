@@ -1,3 +1,8 @@
+/*
+ * Created for OS3 - Security and Network Engineering
+ * Copyright (c) 2019 Philipp Mieden <dreadl0ck [at] protonmail [dot] ch>
+ */
+
 package main
 
 import (
