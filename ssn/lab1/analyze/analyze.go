@@ -45,9 +45,10 @@ type cipherTextInfo struct {
 
 func (c *cipherTextInfo) String() string {
 
-	var b bytes.Buffer
-
-	var cols = [][]string{}
+	var (
+		b    bytes.Buffer
+		cols = [][]string{}
+	)
 	cols = append(cols, []string{"TotalBytes", strconv.Itoa(c.TotalBytes)})
 	cols = append(cols, []string{"HasDigits", strconv.FormatBool(c.HasDigits)})
 	cols = append(cols, []string{"HasSpacing", strconv.FormatBool(c.HasSpacing)})
@@ -55,6 +56,7 @@ func (c *cipherTextInfo) String() string {
 	cols = append(cols, []string{"HasSymbols", strconv.FormatBool(c.HasSymbols)})
 
 	tui.Table(&b, []string{"Attribute", "Value"}, cols)
+	cols = [][]string{}
 
 	var letters []int
 	for _, count := range c.LetterFreqs {
@@ -62,29 +64,34 @@ func (c *cipherTextInfo) String() string {
 	}
 	sort.Ints(letters)
 
-	b.WriteString("LetterFreqs:\n")
+	b.WriteString("\nLetterFreqs:\n")
 	for _, num := range letters[len(letters)-5:] {
 		for r, count := range c.LetterFreqs {
 			if count == num {
-				b.WriteString(string(r) + " : " + strconv.Itoa(count) + " : " + strconv.FormatFloat(float64(count)/float64(len(c.LetterFreqs)), 'f', 2, 64) + "%\n")
+				cols = append(cols, []string{string(r), strconv.Itoa(count), strconv.FormatFloat(float64(count)/float64(len(c.LetterFreqs)), 'f', 2, 64) + "%"})
 			}
 		}
 	}
 
-	var dihpors []int
-	for _, count := range c.DiphoFreqs {
-		dihpors = append(dihpors, count)
-	}
-	sort.Ints(dihpors)
+	tui.Table(&b, []string{"Letter", "Count", "Share"}, cols)
+	cols = [][]string{}
 
-	b.WriteString("DiphoFreqs:\n")
-	for _, num := range dihpors {
+	var diphors []int
+	for _, count := range c.DiphoFreqs {
+		diphors = append(diphors, count)
+	}
+	sort.Ints(diphors)
+
+	b.WriteString("\nDiphorFreqs:\n")
+	for _, num := range diphors[len(diphors)-5:] {
 		for d, count := range c.DiphoFreqs {
 			if count == num {
-				b.WriteString(d + " : " + strconv.Itoa(count) + " : " + strconv.FormatFloat(float64(count)/float64(len(c.DiphoFreqs)), 'f', 2, 64) + "%\n")
+				cols = append(cols, []string{d, strconv.Itoa(count), strconv.FormatFloat(float64(count)/float64(len(c.DiphoFreqs)), 'f', 2, 64) + "%"})
 			}
 		}
 	}
+
+	tui.Table(&b, []string{"Diphor", "Count", "Share"}, cols)
 
 	return b.String()
 }
@@ -106,6 +113,7 @@ func analyze(buf []byte) (info *cipherTextInfo) {
 		info.LetterFreqs[r]++
 
 		if unicode.IsSpace(r) {
+			info.HasSpacing = true
 			continue
 		}
 		diphor += string(b)
@@ -144,8 +152,6 @@ func analyze(buf []byte) (info *cipherTextInfo) {
 		switch {
 		case unicode.IsDigit(r):
 			info.HasDigits = true
-		case unicode.IsSpace(r):
-			info.HasSpacing = true
 		case unicode.IsPunct(r):
 			info.HasPunctuation = true
 		case unicode.IsSymbol(r):
