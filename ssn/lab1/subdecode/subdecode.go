@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"unicode"
 
 	"github.com/mgutz/ansi"
 )
@@ -12,7 +14,7 @@ var flagInput = flag.String("input", "crackme.txt", "supply an input file")
 
 func main() {
 
-	var m = map[rune]rune{
+	var subsitutionMap = map[rune]rune{
 		'd': 'n',
 		'h': 'l',
 		'x': 'o',
@@ -21,25 +23,19 @@ func main() {
 		'q': 't',
 		'j': 'p',
 		'v': 'e',
-		'K': 'D',
 		'k': 'd',
 		'n': 'a',
 		'r': 'r',
-		'P': 'S',
 		'z': 'u',
 		'a': 'c',
 		'o': 'f',
 		'w': 'y',
 		'e': 'b',
-		'Q': 'T',
-		'J': 'P',
 		't': 'w',
 		'i': 'g',
 		'm': 'v',
-		'N': 'A',
 		'f': 'k',
 		'g': 'i',
-		'T': 'W',
 		'b': 'j',
 		's': 'm',
 	}
@@ -54,10 +50,18 @@ func main() {
 	for _, char := range c {
 		r := rune(char)
 
-		if substitue, ok := m[r]; ok {
-			fmt.Print(ansi.Red + string(substitue) + ansi.Reset)
+		if unicode.IsUpper(r) {
+			if substitue, ok := subsitutionMap[unicode.ToLower(r)]; ok {
+				fmt.Print(ansi.Red + string(unicode.ToUpper(substitue)) + ansi.Reset)
+			}
+		} else if unicode.IsLower(r) {
+			if substitue, ok := subsitutionMap[unicode.ToLower(r)]; ok {
+				fmt.Print(ansi.Red + string(unicode.ToLower(substitue)) + ansi.Reset)
+			}
 		} else {
 			fmt.Print(string(r))
 		}
 	}
+
+	os.Stdout.WriteString("\n")
 }
