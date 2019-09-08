@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"unicode"
@@ -12,28 +13,24 @@ import (
 	"github.com/evilsocket/islazy/tui"
 )
 
-var flagInput = flag.String("input", "", "supply an input file")
+var flagInput = flag.String("input", "vigniere.txt", "supply an input file")
 
 func main() {
 
 	flag.Parse()
 
-	var inputPath = "vigniere.txt"
-	if *flagInput != "" {
-		inputPath = *flagInput
-	}
-
-	c, err := ioutil.ReadFile(inputPath)
+	c, err := ioutil.ReadFile(*flagInput)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(analyze(c))
+	fmt.Println(analyze(c, *flagInput))
 }
 
 // CipherTextInfo
 
 type cipherTextInfo struct {
+	Filename       string
 	HasDigits      bool
 	HasSpacing     bool
 	HasPunctuation bool
@@ -45,10 +42,10 @@ type cipherTextInfo struct {
 
 func (c *cipherTextInfo) String() string {
 
-	var (
-		b    bytes.Buffer
-		cols = [][]string{}
-	)
+	var b bytes.Buffer
+	b.WriteString("Filename: " + filepath.Base(c.Filename) + "\n")
+
+	cols := [][]string{}
 	cols = append(cols, []string{"TotalBytes", strconv.Itoa(c.TotalBytes)})
 	cols = append(cols, []string{"HasDigits", strconv.FormatBool(c.HasDigits)})
 	cols = append(cols, []string{"HasSpacing", strconv.FormatBool(c.HasSpacing)})
@@ -98,12 +95,13 @@ func (c *cipherTextInfo) String() string {
 
 // Utils
 
-func analyze(buf []byte) (info *cipherTextInfo) {
+func analyze(buf []byte, path string) (info *cipherTextInfo) {
 
 	info = &cipherTextInfo{
 		LetterFreqs: map[rune]int{},
 		DiphoFreqs:  map[string]int{},
 	}
+	info.Filename = path
 
 	var diphor = ""
 
