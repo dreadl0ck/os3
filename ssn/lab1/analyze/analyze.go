@@ -13,7 +13,7 @@ import (
 	"github.com/evilsocket/islazy/tui"
 )
 
-var flagInput = flag.String("input", "vigniere.txt", "supply an input file")
+var flagInput = flag.String("input", "unknown.txt", "supply an input file")
 
 func main() {
 

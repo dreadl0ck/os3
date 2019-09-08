@@ -15,29 +15,30 @@ var flagInput = flag.String("input", "crackme.txt", "supply an input file")
 func main() {
 
 	var subsitutionMap = map[rune]rune{
-		'd': 'n',
-		'h': 'l',
-		'x': 'o',
-		'p': 's',
-		'c': 'h',
-		'q': 't',
-		'j': 'p',
-		'v': 'e',
-		'k': 'd',
-		'n': 'a',
-		'r': 'r',
-		'z': 'u',
-		'a': 'c',
-		'o': 'f',
-		'w': 'y',
-		'e': 'b',
-		't': 'w',
-		'i': 'g',
-		'm': 'v',
-		'f': 'k',
-		'g': 'i',
-		'b': 'j',
-		's': 'm',
+		'z': 't',
+		'w': 'i',
+		'm': 'g',
+		'q': 'm',
+		's': 'c',
+		'r': 'h',
+		'v': 'n',
+		'c': 'e',
+		'o': 'w',
+		'u': 's',
+		'i': 'a',
+		'f': 'p',
+		'p': 'r',
+		'j': 'v',
+		'x': 'd',
+		'b': 'n',
+		'y': 'y',
+		'a': 'o',
+		'h': 'f',
+		'e': 'u',
+		'l': 'l',
+		'n': 'b',
+		'd': 'z',
+		'g': 'k',
 	}
 
 	flag.Parse()
@@ -53,10 +54,14 @@ func main() {
 		if unicode.IsUpper(r) {
 			if substitue, ok := subsitutionMap[unicode.ToLower(r)]; ok {
 				fmt.Print(ansi.Red + string(unicode.ToUpper(substitue)) + ansi.Reset)
+			} else {
+				fmt.Print(string(r))
 			}
 		} else if unicode.IsLower(r) {
 			if substitue, ok := subsitutionMap[unicode.ToLower(r)]; ok {
 				fmt.Print(ansi.Red + string(unicode.ToLower(substitue)) + ansi.Reset)
+			} else {
+				fmt.Print(string(r))
 			}
 		} else {
 			fmt.Print(string(r))
