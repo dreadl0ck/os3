@@ -47,6 +47,7 @@ func main() {
 		if serviceDown && resp.StatusCode == http.StatusOK {
 			serviceDown = false
 			fmt.Println("DOWNTIME:", time.Since(start))
+			time.Sleep(3 * time.Second)
 		}
 
 		time.Sleep(1000 * time.Millisecond)
