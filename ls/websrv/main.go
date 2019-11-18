@@ -9,6 +9,13 @@ import (
 
 func main() {
 
+	fmt.Println("hello")
+	os.Exit(0)
+	
+	if len(os.Args) < 2 {
+		os.Args = append(os.Args, "1")
+	}
+
 	fmt.Println("starting to serve")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
