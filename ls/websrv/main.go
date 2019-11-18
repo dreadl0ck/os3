@@ -9,8 +9,7 @@ import (
 
 func main() {
 
-	fmt.Println("hello")
-	os.Exit(0)
+	fmt.Println("hello from websrv")
 	
 	if len(os.Args) < 2 {
 		os.Args = append(os.Args, "1")
